@@ -1,0 +1,31 @@
+name: Build and Deploy to GitHub Pages
+
+on:
+  push:
+    branches: ["main"] # Run on pushes to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # This step checks out your repository's code
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true # This is the CRUCIAL line to download LFS files
+
+      # This step builds the site from the files
+      - name: Build with Jekyll
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./
+          destination: ./_site
+
+      # This step prepares the deployment
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+
+      # This step deploys the site
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
